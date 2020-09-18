@@ -1,0 +1,6 @@
+{
+    "download_location": "your download location",
+    "urls": {
+        "search_url": "https://manganelo.com/search/story/{}"
+    }
+}
