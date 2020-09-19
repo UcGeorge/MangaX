@@ -8,7 +8,9 @@ from tqdm import tqdm
 
 config = json.load(open('config.json'))
 
-img_in = '<img src="images/{}.jpg" alt="page{}" style="display:block;">'
+chapter_name_html = '<h3>{}</h3>'
+
+img_in = '<img src="images/{}.jpg" alt="page{}" style="display:block;width:50%">'
 
 html_in = '<!DOCTYPE html><head><link rel="stylesheet" href="/cdn-cgi/styles/main.css" type="text/css" /></head><body><center>{}</center></body></html>'
 
@@ -49,7 +51,7 @@ def chk_dir():
 
 def parse_name(name):
     name_to_return = name
-    allowed_characters = "QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm-_"
+    allowed_characters = "QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm-_1234567890."
     for x in name_to_return:
         if x in allowed_characters:
             continue
@@ -134,15 +136,28 @@ def get_chapters(manga):
 
 def download_chapters(manga_chapters, choice):
     try:
-        choices = choice.split(',')
-        for i in choices:
-            chapter = manga_chapters[int(i)-1]
-            directory = os.getcwd() + '\\' + chapter['chapter_name']
-            if chapter['chapter_name'] not in os.listdir():
-                os.mkdir(directory)
-            os.chdir(directory)
-            download(chapter)
-            os.chdir('..')
+        if '-' in choice:
+            choices = choice.split('-')
+            for i in range(int(choices[0]), int(choices[1])+1):
+                chapter = manga_chapters[int(i)-1]
+                directory = os.getcwd() + '\\' + \
+                    parse_name(chapter['chapter_name'])
+                if parse_name(chapter['chapter_name']) not in os.listdir():
+                    os.mkdir(directory)
+                os.chdir(directory)
+                download(chapter)
+                os.chdir('..')
+        else:
+            choices = choice.split(',')
+            for i in choices:
+                chapter = manga_chapters[int(i)-1]
+                directory = os.getcwd() + '\\' + \
+                    parse_name(chapter['chapter_name'])
+                if parse_name(chapter['chapter_name']) not in os.listdir():
+                    os.mkdir(directory)
+                os.chdir(directory)
+                download(chapter)
+                os.chdir('..')
     except:
         return False
     return True
@@ -176,9 +191,10 @@ def download(chapter):
     os.chdir('..')
 
     read_html = open("Read.html", "w")
-    chapters_html = ""
+    chapters_html = chapter_name_html.format(chapter['chapter_name']).upper()
     for i in range(0, len(pages)):
         chapters_html += img_in.format(i, i)
+    chapters_html += chapter_name_html.format(chapter['chapter_name']).upper()
     read_html.write(html_in.format(chapters_html))
 
 
