@@ -17,7 +17,7 @@ html_in = '<!DOCTYPE html><head><link rel="stylesheet" href="/cdn-cgi/styles/mai
 
 def banner():
     # App banner
-    banner_ascii = '''
+    banner = '''
     ,ggg, ,ggg,_,ggg,                                                     ,ggg,          ,gg
     dP""Y8dP""Y88P""Y8b                                                   dP"""Y8,      ,dP' 
     Yb, `88'  `88'  `88                                                   Yb,_  "8b,   d8"   
@@ -35,7 +35,7 @@ def banner():
                                                     `8, ,8I                                
                                                     `Y8P"                                 
     '''
-    return banner_ascii
+    return banner
 
 
 def chk_dir():
@@ -196,6 +196,7 @@ def download(chapter):
         chapters_html += img_in.format(i, i)
     chapters_html += chapter_name_html.format(chapter['chapter_name']).upper()
     read_html.write(html_in.format(chapters_html))
+    read_html.close()
 
 
 try:
